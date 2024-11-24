@@ -1,0 +1,44 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch ListSubscriber details */
+SET @listSubscriberRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@listSubscriberRequest, "ObjectType", "ListSubscriber")
+AddObjectArrayItem(@listSubscriberRequest, "Properties", "ListID")
+AddObjectArrayItem(@listSubscriberRequest, "Properties", "CreatedDate")
+AddObjectArrayItem(@listSubscriberRequest, "Properties", "Status")
+AddObjectArrayItem(@listSubscriberRequest, "Properties", "SubscriberKey")
+AddObjectArrayItem(@listSubscriberRequest, "Properties", "ObjectID")
+
+/* Execute the RetrieveRequest to fetch ListSubscriber details */
+SET @listSubscriberResult = InvokeRetrieve(@listSubscriberRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@listSubscriberResult) > 0 THEN
+
+   /* Loop through the retrieved ListSubscriber records */
+   FOR @recordIndex = 1 TO RowCount(@listSubscriberResult) DO
+       SET @listSubscriberData = Row(@listSubscriberResult, @recordIndex)
+       SET @listID = Field(@listSubscriberData, "ListID")
+       SET @createdDate = Field(@listSubscriberData, "CreatedDate")
+       SET @status = Field(@listSubscriberData, "Status")
+       SET @subscriberKey = Field(@listSubscriberData, "SubscriberKey")
+       SET @objectID = Field(@listSubscriberData, "ObjectID")
+
+       /* Output the ListSubscriber details */
+       OutputLine(Concat("List ID: ", @listID))
+       OutputLine(Concat("Created Date: ", @createdDate))
+       OutputLine(Concat("Status: ", @status))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine(Concat("Object ID: ", @objectID))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No ListSubscriber records found.")
+ENDIF
+
+]%%

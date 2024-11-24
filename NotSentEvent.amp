@@ -1,0 +1,44 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch NotSentEvent details */
+SET @notSentEventRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@notSentEventRequest, "ObjectType", "NotSentEvent")
+AddObjectArrayItem(@notSentEventRequest, "Properties", "BatchID")
+AddObjectArrayItem(@notSentEventRequest, "Properties", "TriggeredSendDefinitionObjectID")
+AddObjectArrayItem(@notSentEventRequest, "Properties", "EventDate")
+AddObjectArrayItem(@notSentEventRequest, "Properties", "SendID")
+AddObjectArrayItem(@notSentEventRequest, "Properties", "SubscriberKey")
+
+/* Execute the RetrieveRequest to fetch NotSentEvent details */
+SET @notSentEventResult = InvokeRetrieve(@notSentEventRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@notSentEventResult) > 0 THEN
+
+   /* Loop through the retrieved NotSentEvent records */
+   FOR @recordIndex = 1 TO RowCount(@notSentEventResult) DO
+       SET @notSentEventData = Row(@notSentEventResult, @recordIndex)
+       SET @batchID = Field(@notSentEventData, "BatchID")
+       SET @triggeredSendDefinitionID = Field(@notSentEventData, "TriggeredSendDefinitionObjectID")
+       SET @eventDate = Field(@notSentEventData, "EventDate")
+       SET @sendID = Field(@notSentEventData, "SendID")
+       SET @subscriberKey = Field(@notSentEventData, "SubscriberKey")
+
+       /* Output the NotSentEvent details */
+       OutputLine(Concat("Batch ID: ", @batchID))
+       OutputLine(Concat("Triggered Send Definition ID: ", @triggeredSendDefinitionID))
+       OutputLine(Concat("Event Date: ", @eventDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No NotSentEvent records found.")
+ENDIF
+
+]%%

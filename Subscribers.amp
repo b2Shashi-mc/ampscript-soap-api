@@ -1,0 +1,57 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch SendSummary details */
+SET @sendSummaryRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@sendSummaryRequest, "ObjectType", "Subscriber")
+AddObjectArrayItem(@sendSummaryRequest, "Properties", "EmailAddress")
+AddObjectArrayItem(@sendSummaryRequest, "Properties", "Status")
+AddObjectArrayItem(@sendSummaryRequest, "Properties", "SubscriberKey")
+AddObjectArrayItem(@sendSummaryRequest, "Properties", "UnsubscribedDate")
+
+/* Set up and configure the filter to locate the account using CustomerKey */
+SET @customerKeyFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@customerKeyFilter, "Property", "Status")
+SetObjectProperty(@customerKeyFilter, "SimpleOperator", "equals")
+AddObjectArrayItem(@customerKeyFilter, "Value", "Active") /* Replace with the target CustomerKey */
+SetObjectProperty(@accountRetrieveRequest, "Filter", @customerKeyFilter)
+
+
+/* Execute the RetrieveRequest to fetch SendSummary details */
+SET @sendSummaryResult = InvokeRetrieve(@sendSummaryRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@sendSummaryResult) > 0 THEN
+
+   /* Loop through the retrieved SendSummary records */
+   FOR @recordIndex = 1 TO RowCount(@sendSummaryResult) DO
+       SET @sendSummaryData = Row(@sendSummaryResult, @recordIndex)
+       SET @accountID = Field(@sendSummaryData, "AccountID")
+       SET @accountName = Field(@sendSummaryData, "AccountName")
+       SET @createdDate = Field(@sendSummaryData, "CreatedDate")
+       SET @sendID = Field(@sendSummaryData, "SendID")
+       SET @totalSent = Field(@sendSummaryData, "TotalSent")
+       SET @transactional = Field(@sendSummaryData, "Transactional")
+       SET @nonTransactional = Field(@sendSummaryData, "NonTransactional")
+       SET @deliveredTime = Field(@sendSummaryData, "DeliveredTime")
+
+       /* Output the SendSummary details */
+       OutputLine(Concat("Account ID: ", @accountID))
+       OutputLine(Concat("Account Name: ", @accountName))
+       OutputLine(Concat("Created Date: ", @createdDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Total Sent: ", @totalSent))
+       OutputLine(Concat("Transactional: ", @transactional))
+       OutputLine(Concat("Non-Transactional: ", @nonTransactional))
+       OutputLine(Concat("Delivered Time: ", @deliveredTime))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No SendSummary records found.")
+ENDIF
+
+]%%

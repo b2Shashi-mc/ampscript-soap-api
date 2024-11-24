@@ -1,0 +1,47 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch BounceEvent details */
+SET @bounceEventRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@bounceEventRequest, "ObjectType", "BounceEvent")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "BatchID")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "BounceCategory")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "BounceType")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "EventDate")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "SendID")
+AddObjectArrayItem(@bounceEventRequest, "Properties", "SubscriberKey")
+
+/* Execute the RetrieveRequest to fetch BounceEvent details */
+SET @bounceEventResult = InvokeRetrieve(@bounceEventRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@bounceEventResult) > 0 THEN
+
+   /* Loop through the retrieved BounceEvent records */
+   FOR @recordIndex = 1 TO RowCount(@bounceEventResult) DO
+       SET @bounceEventData = Row(@bounceEventResult, @recordIndex)
+       SET @batchID = Field(@bounceEventData, "BatchID")
+       SET @bounceCategory = Field(@bounceEventData, "BounceCategory")
+       SET @bounceType = Field(@bounceEventData, "BounceType")
+       SET @eventDate = Field(@bounceEventData, "EventDate")
+       SET @sendID = Field(@bounceEventData, "SendID")
+       SET @subscriberKey = Field(@bounceEventData, "SubscriberKey")
+
+       /* Output the BounceEvent details */
+       OutputLine(Concat("Batch ID: ", @batchID))
+       OutputLine(Concat("Bounce Category: ", @bounceCategory))
+       OutputLine(Concat("Bounce Type: ", @bounceType))
+       OutputLine(Concat("Event Date: ", @eventDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No BounceEvent records found.")
+ENDIF
+
+]%%

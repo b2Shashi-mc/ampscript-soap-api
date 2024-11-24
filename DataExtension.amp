@@ -1,0 +1,54 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch DataExtension details by Name */
+SET @dataExtensionRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@dataExtensionRequest, "ObjectType", "DataExtension")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "CategoryID")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "CustomerKey")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "CreatedDate")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "Status")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "IsSendable")
+AddObjectArrayItem(@dataExtensionRequest, "Properties", "IsTestable")
+
+/* Set up and configure the filter to locate the DataExtension using Name */
+SET @dataExtensionNameFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@dataExtensionNameFilter, "Property", "Name")
+SetObjectProperty(@dataExtensionNameFilter, "SimpleOperator", "equals")
+AddObjectArrayItem(@dataExtensionNameFilter, "Value", "WebinarConfirmation") /* Replace with the target DataExtension Name */
+SetObjectProperty(@dataExtensionRequest, "Filter", @dataExtensionNameFilter)
+
+/* Execute the RetrieveRequest to fetch DataExtension details */
+SET @dataExtensionResult = InvokeRetrieve(@dataExtensionRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@dataExtensionResult) > 0 THEN
+
+   /* Loop through the retrieved DataExtension records */
+   FOR @recordIndex = 1 TO RowCount(@dataExtensionResult) DO
+       SET @dataExtensionData = Row(@dataExtensionResult, @recordIndex)
+       SET @categoryID = Field(@dataExtensionData, "CategoryID")
+       SET @customerKey = Field(@dataExtensionData, "CustomerKey")
+       SET @createdDate = Field(@dataExtensionData, "CreatedDate")
+       SET @status = Field(@dataExtensionData, "Status")
+       SET @isSendable = Field(@dataExtensionData, "IsSendable")
+       SET @isTestable = Field(@dataExtensionData, "IsTestable")
+
+       /* Output the DataExtension details */
+       OutputLine(Concat("Category ID: ", @categoryID))
+       OutputLine(Concat("Customer Key: ", @customerKey))
+       OutputLine(Concat("Created Date: ", @createdDate))
+       OutputLine(Concat("Status: ", @status))
+       OutputLine(Concat("Is Sendable: ", @isSendable))
+       OutputLine(Concat("Is Testable: ", @isTestable))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No DataExtension records found for the specified Name.")
+ENDIF
+
+]%%

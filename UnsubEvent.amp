@@ -1,0 +1,41 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch UnsubEvent details */
+SET @unsubEventRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@unsubEventRequest, "ObjectType", "UnsubEvent")
+AddObjectArrayItem(@unsubEventRequest, "Properties", "BatchID")
+AddObjectArrayItem(@unsubEventRequest, "Properties", "EventDate")
+AddObjectArrayItem(@unsubEventRequest, "Properties", "SendID")
+AddObjectArrayItem(@unsubEventRequest, "Properties", "SubscriberKey")
+
+/* Execute the RetrieveRequest to fetch UnsubEvent details */
+SET @unsubEventResult = InvokeRetrieve(@unsubEventRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@unsubEventResult) > 0 THEN
+
+   /* Loop through the retrieved UnsubEvent records */
+   FOR @recordIndex = 1 TO RowCount(@unsubEventResult) DO
+       SET @unsubEventData = Row(@unsubEventResult, @recordIndex)
+       SET @batchID = Field(@unsubEventData, "BatchID")
+       SET @eventDate = Field(@unsubEventData, "EventDate")
+       SET @sendID = Field(@unsubEventData, "SendID")
+       SET @subscriberKey = Field(@unsubEventData, "SubscriberKey")
+
+       /* Output the UnsubEvent details */
+       OutputLine(Concat("Batch ID: ", @batchID))
+       OutputLine(Concat("Event Date: ", @eventDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No UnsubEvent records found.")
+ENDIF
+
+]%%

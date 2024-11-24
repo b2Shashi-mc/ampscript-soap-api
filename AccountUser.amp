@@ -1,0 +1,45 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch AccountUser details by Client ID */
+SET @accountUserRetrieveRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@accountUserRetrieveRequest, "ObjectType", "AccountUser")
+AddObjectArrayItem(@accountUserRetrieveRequest, "Properties", "ActiveFlag")
+AddObjectArrayItem(@accountUserRetrieveRequest, "Properties", "CustomerKey")
+AddObjectArrayItem(@accountUserRetrieveRequest, "Properties", "UserID")
+
+/* Set up and configure the filter to locate the AccountUser using Client ID */
+SET @clientIDFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@clientIDFilter, "Property", "Client.ID")
+SetObjectProperty(@clientIDFilter, "SimpleOperator", "equals")
+AddObjectArrayItem(@clientIDFilter, "Value",  AuthenticatedMemberID()) /* Replace with the target Client ID */
+SetObjectProperty(@accountUserRetrieveRequest, "Filter", @clientIDFilter)
+
+/* Execute the RetrieveRequest to fetch AccountUser details */
+SET @accountUserResponse = InvokeRetrieve(@accountUserRetrieveRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@accountUserResponse) > 0 THEN
+
+   /* Loop through the retrieved AccountUser records */
+   FOR @recordIndex = 1 TO RowCount(@accountUserResponse) DO
+       SET @accountUserRecord = Row(@accountUserResponse, @recordIndex)
+       SET @activeFlag = Field(@accountUserRecord, "ActiveFlag")
+       SET @customerKey = Field(@accountUserRecord, "CustomerKey")
+       SET @userID = Field(@accountUserRecord, "UserID")
+
+       /* Output the AccountUser details */
+       OutputLine(Concat("ActiveFlag: ", @activeFlag))
+       OutputLine(Concat("CustomerKey: ", @customerKey))
+       OutputLine(Concat("UserID: ", @userID))
+       OutputLine(Concat("-------------"))
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No AccountUser records found for the specified Client ID.")
+ENDIF
+
+]%%

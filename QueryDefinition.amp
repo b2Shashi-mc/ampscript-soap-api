@@ -1,0 +1,60 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch QueryDefinition details */
+SET @queryRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@queryRequest, "ObjectType", "QueryDefinition")
+AddObjectArrayItem(@queryRequest, "Properties", "CategoryID")
+AddObjectArrayItem(@queryRequest, "Properties", "CustomerKey")
+AddObjectArrayItem(@queryRequest, "Properties", "CreatedDate")
+AddObjectArrayItem(@queryRequest, "Properties", "Status")
+AddObjectArrayItem(@queryRequest, "Properties", "QueryText")
+AddObjectArrayItem(@queryRequest, "Properties", "Name")
+AddObjectArrayItem(@queryRequest, "Properties", "TargetType")
+AddObjectArrayItem(@queryRequest, "Properties", "TargetUpdateType")
+
+/* Set up and configure the filter to locate the QueryDefinition using TargetUpdateType */
+SET @queryFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@queryFilter, "Property", "TargetUpdateType") /* Filtering by TargetUpdateType */
+SetObjectProperty(@queryFilter, "SimpleOperator", "equals")
+AddObjectArrayItem(@queryFilter, "Value", "Overwrite") /* Replace with the actual TargetUpdateType filter value */
+SetObjectProperty(@queryRequest, "Filter", @queryFilter)
+
+/* Execute the RetrieveRequest to fetch QueryDefinition details */
+SET @queryResult = InvokeRetrieve(@queryRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@queryResult) > 0 THEN
+
+   /* Loop through the retrieved QueryDefinition records */
+   FOR @recordIndex = 1 TO RowCount(@queryResult) DO
+       SET @queryData = Row(@queryResult, @recordIndex)
+       SET @categoryID = Field(@queryData, "CategoryID")
+       SET @customerKey = Field(@queryData, "CustomerKey")
+       SET @createdDate = Field(@queryData, "CreatedDate")
+       SET @status = Field(@queryData, "Status")
+       SET @queryText = Field(@queryData, "QueryText")
+       SET @name = Field(@queryData, "Name")
+       SET @targetType = Field(@queryData, "TargetType")
+       SET @targetUpdateType = Field(@queryData, "TargetUpdateType")
+
+       /* Output the QueryDefinition details */
+       OutputLine(Concat("Category ID: ", @categoryID))
+       OutputLine(Concat("CustomerKey: ", @customerKey))
+       OutputLine(Concat("Created Date: ", @createdDate))
+       OutputLine(Concat("Status: ", @status))
+       OutputLine(Concat("Query Text: ", @queryText))
+       OutputLine(Concat("Name: ", @name))
+       OutputLine(Concat("Target Type: ", @targetType))
+       OutputLine(Concat("Target Update Type: ", @targetUpdateType))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No QueryDefinition records found with the specified filter.")
+ENDIF
+
+]%%

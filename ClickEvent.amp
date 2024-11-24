@@ -1,0 +1,47 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch ClickEvent details */
+SET @clickEventRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@clickEventRequest, "ObjectType", "ClickEvent")
+AddObjectArrayItem(@clickEventRequest, "Properties", "BatchID")
+AddObjectArrayItem(@clickEventRequest, "Properties", "URL")
+AddObjectArrayItem(@clickEventRequest, "Properties", "URLID")
+AddObjectArrayItem(@clickEventRequest, "Properties", "EventDate")
+AddObjectArrayItem(@clickEventRequest, "Properties", "SendID")
+AddObjectArrayItem(@clickEventRequest, "Properties", "SubscriberKey")
+
+/* Execute the RetrieveRequest to fetch ClickEvent details */
+SET @clickEventResult = InvokeRetrieve(@clickEventRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@clickEventResult) > 0 THEN
+
+   /* Loop through the retrieved ClickEvent records */
+   FOR @recordIndex = 1 TO RowCount(@clickEventResult) DO
+       SET @clickEventData = Row(@clickEventResult, @recordIndex)
+       SET @batchID = Field(@clickEventData, "BatchID")
+       SET @url = Field(@clickEventData, "URL")
+       SET @urlID = Field(@clickEventData, "URLID")
+       SET @eventDate = Field(@clickEventData, "EventDate")
+       SET @sendID = Field(@clickEventData, "SendID")
+       SET @subscriberKey = Field(@clickEventData, "SubscriberKey")
+
+       /* Output the ClickEvent details */
+       OutputLine(Concat("Batch ID: ", @batchID))
+       OutputLine(Concat("URL: ", @url))
+       OutputLine(Concat("URL ID: ", @urlID))
+       OutputLine(Concat("Event Date: ", @eventDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No ClickEvent records found.")
+ENDIF
+
+]%%

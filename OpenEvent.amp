@@ -1,0 +1,44 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch OpenEvent details */
+SET @openEventRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@openEventRequest, "ObjectType", "OpenEvent")
+AddObjectArrayItem(@openEventRequest, "Properties", "BatchID")
+AddObjectArrayItem(@openEventRequest, "Properties", "TriggeredSendDefinitionObjectID")
+AddObjectArrayItem(@openEventRequest, "Properties", "EventDate")
+AddObjectArrayItem(@openEventRequest, "Properties", "SendID")
+AddObjectArrayItem(@openEventRequest, "Properties", "SubscriberKey")
+
+/* Execute the RetrieveRequest to fetch OpenEvent details */
+SET @openEventResult = InvokeRetrieve(@openEventRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@openEventResult) > 0 THEN
+
+   /* Loop through the retrieved OpenEvent records */
+   FOR @recordIndex = 1 TO RowCount(@openEventResult) DO
+       SET @openEventData = Row(@openEventResult, @recordIndex)
+       SET @batchID = Field(@openEventData, "BatchID")
+       SET @triggeredSendDefinitionID = Field(@openEventData, "TriggeredSendDefinitionObjectID")
+       SET @eventDate = Field(@openEventData, "EventDate")
+       SET @sendID = Field(@openEventData, "SendID")
+       SET @subscriberKey = Field(@openEventData, "SubscriberKey")
+
+       /* Output the OpenEvent details */
+       OutputLine(Concat("Batch ID: ", @batchID))
+       OutputLine(Concat("Triggered Send Definition ID: ", @triggeredSendDefinitionID))
+       OutputLine(Concat("Event Date: ", @eventDate))
+       OutputLine(Concat("Send ID: ", @sendID))
+       OutputLine(Concat("Subscriber Key: ", @subscriberKey))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No OpenEvent records found.")
+ENDIF
+
+]%%

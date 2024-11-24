@@ -1,0 +1,48 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch Automation details by Name */
+SET @automationRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@automationRequest, "ObjectType", "Automation")
+AddObjectArrayItem(@automationRequest, "Properties", "AutomationType")
+AddObjectArrayItem(@automationRequest, "Properties", "CustomerKey")
+AddObjectArrayItem(@automationRequest, "Properties", "CreatedDate")
+AddObjectArrayItem(@automationRequest, "Properties", "Status")
+
+/* Set up and configure the filter to locate the Automation using Name */
+SET @automationNameFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@automationNameFilter, "Property", "Name")
+SetObjectProperty(@automationNameFilter, "SimpleOperator", "equals")
+AddObjectArrayItem(@automationNameFilter, "Value", "Webinar Confirmation") /* Replace with the target Automation Name */
+SetObjectProperty(@automationRequest, "Filter", @automationNameFilter)
+
+/* Execute the RetrieveRequest to fetch Automation details */
+SET @automationResult = InvokeRetrieve(@automationRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if any records were retrieved */
+IF RowCount(@automationResult) > 0 THEN
+
+   /* Loop through the retrieved Automation records */
+   FOR @recordIndex = 1 TO RowCount(@automationResult) DO
+       SET @automationData = Row(@automationResult, @recordIndex)
+       SET @automationType = Field(@automationData, "AutomationType")
+       SET @automationCustomerKey = Field(@automationData, "CustomerKey")
+       SET @automationCreatedDate = Field(@automationData, "CreatedDate")
+       SET @automationStatus = Field(@automationData, "Status")
+
+       /* Output the Automation details */
+       OutputLine(Concat("Automation Type: ", @automationType))
+       OutputLine(Concat("CustomerKey: ", @automationCustomerKey))
+       OutputLine(Concat("Created Date: ", @automationCreatedDate))
+       OutputLine(Concat("Status: ", @automationStatus))
+       OutputLine("-------------")
+   NEXT @recordIndex
+
+ELSE
+   /* Output message if no records are found */
+   OutputLine("No Automation records found for the specified Name.")
+ENDIF
+
+]%%

@@ -1,0 +1,66 @@
+%%[
+
+/* Initialize the RetrieveRequest object to fetch Automation details */
+SET @automationRequest = CreateObject("RetrieveRequest")
+SetObjectProperty(@automationRequest, "ObjectType", "AutomationInstance")
+AddObjectArrayItem(@automationRequest, "Properties", "AutomationID")
+AddObjectArrayItem(@automationRequest, "Properties", "AutomationType")
+AddObjectArrayItem(@automationRequest, "Properties", "CustomerKey")
+AddObjectArrayItem(@automationRequest, "Properties", "Name")
+AddObjectArrayItem(@automationRequest, "Properties", "ScheduledTime")
+AddObjectArrayItem(@automationRequest, "Properties", "StartTime")
+AddObjectArrayItem(@automationRequest, "Properties", "Status")
+
+/* Create SimpleFilterPart to filter by Status = 'Active' */
+SET @statusFilter = CreateObject("SimpleFilterPart")
+SetObjectProperty(@statusFilter, "Property", "Status") /* Filter by the Status property */
+SetObjectProperty(@statusFilter, "SimpleOperator", "equals") /* Using 'equals' operator */
+AddObjectArrayItem(@statusFilter, "Value", "Active") /* Only active automations */
+
+SetObjectProperty(@automationRequest, "Filter", @statusFilter) /* Apply the filter to the request */
+
+/* Execute the RetrieveRequest to fetch Automation details */
+SET @automationResult = InvokeRetrieve(@automationRequest, @retrieveStatus, @retrieveRequestID)
+
+/* Output the retrieve status */
+OutputLine(Concat("Retrieve Status: ", @retrieveStatus))
+
+/* Check if the result is empty or null */
+IF NOT EMPTY(@automationResult) THEN
+
+   /* Check if any records were retrieved */
+   IF RowCount(@automationResult) > 0 THEN
+
+      /* Loop through the retrieved Automation records */
+      FOR @recordIndex = 1 TO RowCount(@automationResult) DO
+          SET @automationData = Row(@automationResult, @recordIndex)
+          SET @automationID = Field(@automationData, "AutomationID")
+          SET @automationType = Field(@automationData, "AutomationType")
+          SET @automationCustomerKey = Field(@automationData, "CustomerKey")
+          SET @automationName = Field(@automationData, "Name")
+          SET @automationScheduledTime = Field(@automationData, "ScheduledTime")
+          SET @automationStartTime = Field(@automationData, "StartTime")
+          SET @automationStatus = Field(@automationData, "Status")
+
+          /* Output the Automation details */
+          OutputLine(Concat("Automation ID: ", @automationID))
+          OutputLine(Concat("Automation Type: ", @automationType))
+          OutputLine(Concat("CustomerKey: ", @automationCustomerKey))
+          OutputLine(Concat("Name: ", @automationName))
+          OutputLine(Concat("Scheduled Time: ", @automationScheduledTime))
+          OutputLine(Concat("Start Time: ", @automationStartTime))
+          OutputLine(Concat("Status: ", @automationStatus))
+          OutputLine("-------------")
+      NEXT @recordIndex
+
+   ELSE
+      /* Output message if no records are found */
+      OutputLine("No active Automation records found.")
+   ENDIF
+
+ELSE
+   /* Output error if no results or unexpected error occurs */
+   OutputLine("Error: Unable to retrieve active automation details.")
+ENDIF
+
+]%%
