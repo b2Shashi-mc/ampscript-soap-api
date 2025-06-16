@@ -1,152 +1,291 @@
-/* Reset and base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* General Reset */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    overflow-y: hidden; /* changed from hidden */
 }
 
+/* Body Styling */
 body {
-  font-family: 'Inter', sans-serif;
-  background: #f8f9fa;
-  color: #2d3436;
-  line-height: 1.6;
-  padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: #f3f4f6;
+    color: #333;
+    line-height: 1.6;
+    font-size: 10px;
+    min-height: 100vh;
+    padding: 20px;
 }
 
+/* Container Styling */
 .container {
-  max-width: 860px;
-  margin: auto;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 40px 30px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 500px;
+    transition: transform 0.3s ease-out;
+    overflow-x: hidden;
 }
 
-/* Header */
-.branding {
-  text-align: center;
-  margin-bottom: 30px;
+.container:hover {
+    transform: scale(1.02);
 }
 
-.logo {
-  width: 60px;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 10px;
+/* Header Styling */
+header {
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: #27ae60;
+    color: #2c3e50;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.tagline {
-  color: #7f8c8d;
-  font-size: 1.1rem;
+.sub-header {
+    font-size: 1.15rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
 }
 
-/* Instructions */
-.instructions {
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 0.95rem;
-  color: #555;
+/* Object List */
+#object-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+    padding: 0;
+    list-style: none;
+    transition: grid-template-columns 0.3s ease;
 }
 
-.object-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin: 20px 0;
+@media (max-width: 768px) {
+    #object-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
 }
 
 .list-item {
-  background: #ecf0f1;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1rem;   /* smaller font size */
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  border: 2px solid transparent;
-  line-height: 1.3;
-  word-break: break-word;
+    background: #ffffff;
+    padding: 25px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #ddd;
 }
 
 .list-item:hover {
-  background-color: #dfe6e9;
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    background-color: #f9f9f9;
 }
 
+.list-item input[type="radio"] {
+    display: none;
+}
+
+.list-item label {
+    font-size: 0.85rem;
+    color: #4caf50;
+    font-weight: 500;
+    display: block;
+    margin-top: 10px;
+    transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+/* Selected State for List Item */
 .list-item.selected {
-  border-color: #27ae60;
-  background-color: #d4edda;
+    border: 2px solid #4caf50;
+    background-color: #e8f5e9;
 }
 
-
-/* Button */
-.primary-btn {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: #27ae60;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background 0.3s ease;
+.list-item.selected label {
+    color: #2c3e50;
+    font-weight: 600;
 }
 
-.primary-btn:hover {
-  background: #219150;
+/* Button Styling */
+button {
+    display: block;
+    width: 100%;
+    padding: 18px 26px;
+    margin-top: 30px;
+    background: linear-gradient(90deg, #4caf50, #388e3c);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    letter-spacing: 1px;
 }
 
-.primary-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+button:hover {
+    background: linear-gradient(90deg, #45a049, #2e7d32);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: #27ae60;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(20px);
-  transition: all 0.4s ease;
-  z-index: 100;
+button:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.toast.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+/* Modal Styling */
+.copy-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* Footer */
+.copy-modal.show {
+    display: flex;
+}
+
+.copy-modal .modal-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    color: #333;
+    text-align: center;
+    width: 85%;
+    max-width: 420px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.copy-modal .modal-content p {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.copy-modal .modal-content button {
+    padding: 12px 20px;
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.copy-modal .modal-content button:hover {
+    background-color: #388e3c;
+}
+
+/* Footer Styling */
+/* Footer Styling */
 footer {
-  text-align: center;
-  margin-top: 40px;
-  color: #7f8c8d;
-  font-size: 0.9rem;
+    width: 100%;
+    padding: 5x 10px;  /* Generous padding for spacing */
+    background: #2c3e50;  /* Darker background for a professional look */
+    color: #ecf0f1;  /* Light text color for readability */
+    font-size: 0.7rem;  /* Slightly larger font for better readability */
+    text-align: center;  /* Centered text */
+    border-top: 0.5px solid #34495e;  /* Subtle top border for separation */
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);  /* Light shadow for depth */
+    margin-top: 20px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-footer a {
-  color: #27ae60;
-  text-decoration: none;
+/* Optional: Add a "Company Information" section for a more professional look */
+footer .footer-content {
+    max-width: 1200px;
+    width: 100%;
 }
 
-footer a:hover {
-  text-decoration: underline;
+/* Add a small link section for terms, privacy, etc. */
+footer .footer-links {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #ecf0f1;
+}
+
+footer .footer-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+
+footer .footer-links a:hover {
+    color: #3498db;  /* Add a hover effect for links */
+}
+
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .sub-header {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 1.1rem;
+        padding: 14px 20px;
+    }
+
+    .list-item {
+        padding: 18px;
+        font-size: 1.1rem;
+    }
+
+    #object-list {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+    0% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
 }
