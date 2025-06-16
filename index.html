@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMPScript</title>
-    <link rel="icon" href="icon.jpg" type="image/jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AMPScriptify</title>
+  <link rel="icon" href="icon.jpg" type="image/jpeg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div class="container">
-        <!-- Main Header -->
-        <header>
-            <h1>AMPScript SOAP API </h1>
-           
-        </header>
+  <main class="container">
+    <!-- Header -->
+    <header class="branding">
+      <img src="icon.jpg" alt="AMPScriptify Logo" class="logo"/>
+      <h1>AMPScriptify</h1>
+      <p class="tagline">Instant AMPScript for SFMC SOAP API objects</p>
+    </header>
 
-        <!-- Object List -->
-        <div id="object-list">
-            <!-- List of objects will be dynamically populated here -->
-        </div>
+    <!-- Instructions -->
+    <section class="instructions">
+      <p>Select a SOAP object below to generate the corresponding AMPScript code snippet. The code will automatically copy to your clipboard.</p>
+    </section>
 
-        <!-- Button to generate code -->
-        <button id="generate-code">Generate Code</button>
-        <!-- Footer -->
-    <footer>
-        <p>version 1.0 &copy; 2024 Shashi Prasad. All rights reserved.</p>
-    </footer>
-    </div>
+    <!-- Object Selection -->
+    <section id="object-list" class="object-grid" aria-label="SFMC Objects">
+      <!-- JS will populate here -->
+    </section>
 
-    <!-- Modal for Copy Confirmation -->
-    <div id="copyModal" class="copy-modal">
-        <div class="modal-content">
-            <p>Code copied to clipboard!</p>
-        </div>
-    </div>
+    <!-- Generate Button -->
+    <button id="generate-code" class="primary-btn" disabled>
+      Select an Object to Generate Code
+    </button>
 
-    
+    <!-- Toast -->
+    <div id="toast" class="toast" role="alert" aria-live="assertive">Code copied to clipboard!</div>
+  </main>
 
-    <script src="script.js"></script>
+  <footer>
+    <p>&copy; 2024 AMPScriptify by Shashi Prasad • <a href="https://github.com/b2Shashi-mc/ampscript-soap-api" target="_blank">GitHub Repo</a></p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
